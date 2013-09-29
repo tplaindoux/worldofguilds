@@ -10,10 +10,72 @@ Target Server Type    : MYSQL
 Target Server Version : 50524
 File Encoding         : 65001
 
-Date: 2013-09-28 19:53:41
+Date: 2013-09-29 15:34:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+-- ----------------------------
+-- Table structure for `acl_permissions`
+-- ----------------------------
+DROP TABLE IF EXISTS `acl_permissions`;
+CREATE TABLE `acl_permissions` (
+  `perm_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `perm_desc` varchar(50) NOT NULL,
+  PRIMARY KEY (`perm_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of acl_permissions
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `acl_role_perm`
+-- ----------------------------
+DROP TABLE IF EXISTS `acl_role_perm`;
+CREATE TABLE `acl_role_perm` (
+  `role_id` int(10) unsigned NOT NULL,
+  `perm_id` int(10) unsigned NOT NULL,
+  KEY `role_id` (`role_id`),
+  KEY `perm_id` (`perm_id`),
+  CONSTRAINT `acl_role_perm_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `acl_roles` (`role_id`),
+  CONSTRAINT `acl_role_perm_ibfk_2` FOREIGN KEY (`perm_id`) REFERENCES `acl_permissions` (`perm_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of acl_role_perm
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `acl_roles`
+-- ----------------------------
+DROP TABLE IF EXISTS `acl_roles`;
+CREATE TABLE `acl_roles` (
+  `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of acl_roles
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `acl_user_role`
+-- ----------------------------
+DROP TABLE IF EXISTS `acl_user_role`;
+CREATE TABLE `acl_user_role` (
+  `user_id` int(10) unsigned NOT NULL,
+  `role_id` int(10) unsigned NOT NULL,
+  KEY `user_id` (`user_id`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `acl_user_role_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `acl_user_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `acl_roles` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of acl_user_role
+-- ----------------------------
+
 -- ----------------------------
 -- Table structure for `designs`
 -- ----------------------------
@@ -35,6 +97,39 @@ CREATE TABLE `designs` (
 
 -- ----------------------------
 -- Records of designs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `games`
+-- ----------------------------
+DROP TABLE IF EXISTS `games`;
+CREATE TABLE `games` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_cat` int(10) unsigned NOT NULL,
+  `title` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`,`id_cat`),
+  UNIQUE KEY `ids` (`id`),
+  KEY `cats` (`id_cat`),
+  CONSTRAINT `cats` FOREIGN KEY (`id_cat`) REFERENCES `games_cat` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of games
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `games_cat`
+-- ----------------------------
+DROP TABLE IF EXISTS `games_cat`;
+CREATE TABLE `games_cat` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`,`title`),
+  UNIQUE KEY `ids` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of games_cat
 -- ----------------------------
 
 -- ----------------------------
@@ -93,6 +188,78 @@ CREATE TABLE `slinks` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for `sponsors`
+-- ----------------------------
+DROP TABLE IF EXISTS `sponsors`;
+CREATE TABLE `sponsors` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` int(10) unsigned NOT NULL,
+  `id_website` int(10) unsigned NOT NULL,
+  `active` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`,`id_user`,`id_website`),
+  UNIQUE KEY `sponsor_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='I don''t remember the purpose of this table. \r\n\r\n';
+
+-- ----------------------------
+-- Records of sponsors
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `titles`
+-- ----------------------------
+DROP TABLE IF EXISTS `titles`;
+CREATE TABLE `titles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `id_req_title` int(10) unsigned NOT NULL COMMENT 'The parent title',
+  `value` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` tinyint(3) unsigned NOT NULL,
+  `catalogue` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`id`,`title`),
+  KEY `ids` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of titles
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `transactions`
+-- ----------------------------
+DROP TABLE IF EXISTS `transactions`;
+CREATE TABLE `transactions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` int(10) unsigned NOT NULL,
+  `id_website` int(10) unsigned NOT NULL,
+  `timestamp_creation` int(11) NOT NULL,
+  `timestamp_validate` int(10) unsigned NOT NULL,
+  `amount` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`,`id_user`,`id_website`),
+  KEY `user` (`id_user`),
+  KEY `transaction_id` (`id`),
+  CONSTRAINT `user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of transactions
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `user_follows`
+-- ----------------------------
+DROP TABLE IF EXISTS `user_follows`;
+CREATE TABLE `user_follows` (
+  `id_user` int(10) unsigned NOT NULL,
+  `id_following` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id_user`,`id_following`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user_follows
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `users`
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
@@ -120,6 +287,72 @@ CREATE TABLE `users` (
 
 -- ----------------------------
 -- Records of users
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `users_friends`
+-- ----------------------------
+DROP TABLE IF EXISTS `users_friends`;
+CREATE TABLE `users_friends` (
+  `id_user` int(10) unsigned NOT NULL,
+  `id_friend` int(10) unsigned NOT NULL,
+  `timestamp_creation` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id_user`,`id_friend`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of users_friends
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `users_games`
+-- ----------------------------
+DROP TABLE IF EXISTS `users_games`;
+CREATE TABLE `users_games` (
+  `id_user` int(10) unsigned NOT NULL,
+  `id_game` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id_user`,`id_game`),
+  CONSTRAINT `ids` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of users_games
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `users_online`
+-- ----------------------------
+DROP TABLE IF EXISTS `users_online`;
+CREATE TABLE `users_online` (
+  `ip` int(10) unsigned NOT NULL COMMENT 'use the INET_ATON() and INET_NTOA() functions to return the IP address from its numeric value',
+  `id_user` int(10) unsigned NOT NULL,
+  `id_website` int(10) unsigned NOT NULL,
+  `id_resource` int(10) unsigned DEFAULT NULL,
+  `timestamp_last_action` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`ip`,`id_user`,`id_website`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of users_online
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `users_titles`
+-- ----------------------------
+DROP TABLE IF EXISTS `users_titles`;
+CREATE TABLE `users_titles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_title` int(10) unsigned NOT NULL,
+  `id_user` int(10) unsigned NOT NULL,
+  `id_website` int(10) unsigned NOT NULL,
+  `timestamp_unlock` int(10) unsigned NOT NULL,
+  `seen` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_title` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of users_titles
 -- ----------------------------
 
 -- ----------------------------
