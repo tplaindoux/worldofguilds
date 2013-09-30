@@ -1,4 +1,4 @@
-ZendSkeletonApplication
+World of Guilds
 =======================
 
 Introduction
@@ -36,3 +36,10 @@ Versionning Roadmap
     *  Design Implementation
         *  #2 tests
 
+Credits
+------------
+
+Libraries we use
+
+*   https://github.com/bjyoungblood/BjyAuthorize
+*   https://github.com/ZF-Commons/ZfcUser
