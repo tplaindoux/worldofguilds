@@ -19,6 +19,8 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+
     }
 
     public function getConfig()
@@ -35,5 +37,25 @@ class Module
                 ),
             ),
         );
+    }
+
+    private function getCurrentSubdomain($value='')
+    {
+        // Retrive and test the current subdomain
+        $url    = $_SERVER['HTTP_HOST'];
+
+        $host   = explode(".",$url);
+
+        $nb = count($host);
+        
+        // we have a subdomain, and it's not "www"
+        return ($nb > 1 && ($host[0] != 'www') ) ? $host[0] :'portal';
+    }
+
+    private function loadWebsiteInfos($website_link)
+    {        
+
+        // If the subdomain is NOT the main or and is existing, we assign a variable
+        $isMain = ($website_link != 'portal') ? true : false;
     }
 }
