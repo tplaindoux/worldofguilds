@@ -51,6 +51,9 @@ return array(
         // 'check_dependencies' => true,
     ),
 
+    'website_info' => array(
+        'availabity' => 0
+    ),
     // Used to create an own service manager. May contain one or more child arrays.
     //'service_listener_options' => array(
     //     array(
